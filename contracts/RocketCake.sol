@@ -37,9 +37,9 @@ contract ROCKETCAKE is ERC20, Ownable {
 
   mapping(address => bool) public _isBlacklisted;
 
-  uint256 public CAKERewardsFee = 7;
+  uint256 public CAKERewardsFee = 8;
   uint256 public liquidityFee = 3;
-  uint256 public marketingFee = 5;
+  uint256 public marketingFee = 4;
   uint256 public totalFees = CAKERewardsFee.add(liquidityFee).add(marketingFee);
 
   address public _marketingWalletAddress = 0x24e21EF2C3C9C93B5791d77cF934bF92a91276ba;
