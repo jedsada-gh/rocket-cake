@@ -11,13 +11,13 @@
 
 pragma solidity ^0.6.2;
 
-import './DividendPayingToken.sol';
-import './SafeMath.sol';
-import './IterableMapping.sol';
-import './Ownable.sol';
-import './IUniswapV2Pair.sol';
-import './IUniswapV2Factory.sol';
-import './IUniswapV2Router.sol';
+import "./DividendPayingToken.sol";
+import "./SafeMath.sol";
+import "./IterableMapping.sol";
+import "./Ownable.sol";
+import "./IUniswapV2Pair.sol";
+import "./IUniswapV2Factory.sol";
+import "./IUniswapV2Router.sol";
 
 contract ROCKETCAKE is ERC20, Ownable {
   using SafeMath for uint256;
@@ -80,20 +80,20 @@ contract ROCKETCAKE is ERC20, Ownable {
     address indexed processor
   );
 
-  constructor() public ERC20('ROCKET CAKE', 'ROCKETCAKE') {
+  constructor() public ERC20("ROCKET CAKE", "ROCKETCAKE") {
     dividendTracker = new ROCKETCAKEDividendTracker();
 
     IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
     // Create a uniswap pair for this new token
-    address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory()).createPair(
-      address(this),
-      _uniswapV2Router.WETH()
-    );
+    // address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory()).createPair(
+    //   address(this),
+    //   _uniswapV2Router.WETH()
+    // );
 
     uniswapV2Router = _uniswapV2Router;
-    uniswapV2Pair = _uniswapV2Pair;
+    // uniswapV2Pair = _uniswapV2Pair;
 
-    _setAutomatedMarketMakerPair(_uniswapV2Pair, true);
+    // _setAutomatedMarketMakerPair(_uniswapV2Pair, true);
 
     // exclude from receiving dividends
     dividendTracker.excludeFromDividends(address(dividendTracker));
@@ -108,22 +108,22 @@ contract ROCKETCAKE is ERC20, Ownable {
     excludeFromFees(address(this), true);
 
     /*
-            _mint is an internal function in ERC20.sol that is only called here,
-            and CANNOT be called ever again
-        */
+      _mint is an internal function in ERC20.sol that is only called here,
+      and CANNOT be called ever again
+    */
     _mint(owner(), 100000000000 * (10**18));
   }
 
   receive() external payable {}
 
   function updateDividendTracker(address newAddress) public onlyOwner {
-    require(newAddress != address(dividendTracker), 'ROCKETCAKE: The dividend tracker already has that address');
+    require(newAddress != address(dividendTracker), "ROCKETCAKE: The dividend tracker already has that address");
 
     ROCKETCAKEDividendTracker newDividendTracker = ROCKETCAKEDividendTracker(payable(newAddress));
 
     require(
       newDividendTracker.owner() == address(this),
-      'ROCKETCAKE: The new dividend tracker must be owned by the ROCKETCAKE token contract'
+      "ROCKETCAKE: The new dividend tracker must be owned by the ROCKETCAKE token contract"
     );
 
     newDividendTracker.excludeFromDividends(address(newDividendTracker));
@@ -137,7 +137,7 @@ contract ROCKETCAKE is ERC20, Ownable {
   }
 
   function updateUniswapV2Router(address newAddress) public onlyOwner {
-    require(newAddress != address(uniswapV2Router), 'ROCKETCAKE: The router already has that address');
+    require(newAddress != address(uniswapV2Router), "ROCKETCAKE: The router already has that address");
     emit UpdateUniswapV2Router(newAddress, address(uniswapV2Router));
     uniswapV2Router = IUniswapV2Router02(newAddress);
     address _uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory()).createPair(
@@ -182,7 +182,7 @@ contract ROCKETCAKE is ERC20, Ownable {
   }
 
   function setAutomatedMarketMakerPair(address pair, bool value) public onlyOwner {
-    require(pair != uniswapV2Pair, 'ROCKETCAKE: The PancakeSwap pair cannot be removed from automatedMarketMakerPairs');
+    require(pair != uniswapV2Pair, "ROCKETCAKE: The PancakeSwap pair cannot be removed from automatedMarketMakerPairs");
 
     _setAutomatedMarketMakerPair(pair, value);
   }
@@ -194,7 +194,7 @@ contract ROCKETCAKE is ERC20, Ownable {
   function _setAutomatedMarketMakerPair(address pair, bool value) private {
     require(
       automatedMarketMakerPairs[pair] != value,
-      'ROCKETCAKE: Automated market maker pair is already set to that value'
+      "ROCKETCAKE: Automated market maker pair is already set to that value"
     );
     automatedMarketMakerPairs[pair] = value;
 
@@ -206,8 +206,11 @@ contract ROCKETCAKE is ERC20, Ownable {
   }
 
   function updateGasForProcessing(uint256 newValue) public onlyOwner {
-    require(newValue >= 200000 && newValue <= 500000, 'ROCKETCAKE: gasForProcessing must be between 200,000 and 500,000');
-    require(newValue != gasForProcessing, 'ROCKETCAKE: Cannot update gasForProcessing to same value');
+    require(
+      newValue >= 200000 && newValue <= 500000,
+      "ROCKETCAKE: gasForProcessing must be between 200,000 and 500,000"
+    );
+    require(newValue != gasForProcessing, "ROCKETCAKE: Cannot update gasForProcessing to same value");
     emit GasForProcessingUpdated(newValue, gasForProcessing);
     gasForProcessing = newValue;
   }
@@ -296,9 +299,9 @@ contract ROCKETCAKE is ERC20, Ownable {
     address to,
     uint256 amount
   ) internal override {
-    require(from != address(0), 'ERC20: transfer from the zero address');
-    require(to != address(0), 'ERC20: transfer to the zero address');
-    require(!_isBlacklisted[from] && !_isBlacklisted[to], 'Blacklisted address');
+    require(from != address(0), "ERC20: transfer from the zero address");
+    require(to != address(0), "ERC20: transfer to the zero address");
+    require(!_isBlacklisted[from] && !_isBlacklisted[to], "Blacklisted address");
 
     if (amount == 0) {
       super._transfer(from, to, 0);
@@ -469,7 +472,7 @@ contract ROCKETCAKEDividendTracker is Ownable, DividendPayingToken {
 
   event Claim(address indexed account, uint256 amount, bool indexed automatic);
 
-  constructor() public DividendPayingToken('ROCKETCAKE_Dividen_Tracker', 'ROCKETCAKE_Dividend_Tracker') {
+  constructor() public DividendPayingToken("ROCKETCAKE_Dividen_Tracker", "ROCKETCAKE_Dividend_Tracker") {
     claimWait = 3600;
     minimumTokenBalanceForDividends = 200000 * (10**18); //must hold 200000+ tokens
   }
@@ -479,7 +482,7 @@ contract ROCKETCAKEDividendTracker is Ownable, DividendPayingToken {
     address,
     uint256
   ) internal override {
-    require(false, 'ROCKETCAKE_Dividend_Tracker: No transfers allowed');
+    require(false, "ROCKETCAKE_Dividend_Tracker: No transfers allowed");
   }
 
   function withdrawDividend() public override {
@@ -502,9 +505,9 @@ contract ROCKETCAKEDividendTracker is Ownable, DividendPayingToken {
   function updateClaimWait(uint256 newClaimWait) external onlyOwner {
     require(
       newClaimWait >= 3600 && newClaimWait <= 86400,
-      'ROCKETCAKE_Dividend_Tracker: claimWait must be updated to between 1 and 24 hours'
+      "ROCKETCAKE_Dividend_Tracker: claimWait must be updated to between 1 and 24 hours"
     );
-    require(newClaimWait != claimWait, 'ROCKETCAKE_Dividend_Tracker: Cannot update claimWait to same value');
+    require(newClaimWait != claimWait, "ROCKETCAKE_Dividend_Tracker: Cannot update claimWait to same value");
     emit ClaimWaitUpdated(newClaimWait, claimWait);
     claimWait = newClaimWait;
   }
