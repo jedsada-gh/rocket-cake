@@ -13,13 +13,13 @@ const optimizeSettings = {
   settings: {
     optimizer: {
       enabled: true,
-      runs: 1000,
+      runs: 200,
     },
   },
 };
 
 module.exports = {
-  defaultNetwork: 'ganache',
+  defaultNetwork: "ganache",
   networks: {
     bsctest: {
       accounts: [`0x${ACCOUNT_PRIVATE_KEY}`],
@@ -29,7 +29,7 @@ module.exports = {
     ganache: {
       allowUnlimitedContractSize: true,
       gasLimit: 6721975 * 10, // increase the gas limit by 10
-      url: 'http://127.0.0.1:7545',
+      url: "http://127.0.0.1:7545",
     },
   },
   solidity: {
@@ -43,5 +43,8 @@ module.exports = {
         ...optimizeSettings,
       },
     ],
+  },
+  gasReporter: {
+    currency: "EUR",
   },
 };
