@@ -8,15 +8,14 @@ task("deploy", "Rocket Contract", async (_, hre) => {
   const contracts = { rocketToken: "",  iterableMapping: ""};
   const IterableMapping = await hre.ethers.getContractFactory("IterableMapping");
   const iterableMapping = await IterableMapping.deploy();
+  await iterableMapping.deployed();
 
   const RocketCake = await hre.ethers.getContractFactory("ROCKETCAKE", {
     libraries: {
       IterableMapping: iterableMapping.address,
     },
   });
-
   const rocketCake = await RocketCake.deploy();
-
   await rocketCake.deployed();
 
   contracts.rocketToken = rocketCake.address;
